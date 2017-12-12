@@ -23,7 +23,10 @@ export class ViewRouter extends PolymerElement {
   }
 
   _getPathParts(path) {
-    return path.replace(/^[/\s]+/, '').replace(/[/\s]+$/, '').split(/[/\s]+/);
+    return path
+      .replace(ViewRouter.stripLeftSlashPattern, '')
+      .replace(ViewRouter.stripRightSlashPattern, '')
+      .split(ViewRouter.splitSlashPattern);
   }
 
   _getParametersFromPattern(pattern) {
@@ -118,5 +121,9 @@ export class ViewRouter extends PolymerElement {
     });
   }
 }
+
+ViewRouter.stripLeftSlashPattern = /^[/\s]+/;
+ViewRouter.stripRightSlashPattern = /[/\s]+$/;
+ViewRouter.splitSlashPattern = /[/\s]+/;
 
 customElements.define('view-router', ViewRouter);
