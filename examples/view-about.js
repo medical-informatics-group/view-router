@@ -1,39 +1,21 @@
-import {ViewElement} from '../view-element.js';
+import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from '../view-behavior.js';
 
-export class ViewAbout extends ViewElement {
+export class ViewAbout extends ViewBehavior(PolymerElement) {
   static get template() {
     return `
-      <style>
-        :host {
-          display: none;
-        }
-
-        :host([visible]) {
-          display: block;
-        }
-      </style>
+      ${super.template}
       <h1>[[viewTitle]]</h1>
-      <p>This an example of the router. <a href="/">Go to the start page</a>.</p>
+      <p>
+        This an example of the router. <a href="/">Go to the start page</a>.
+        Or read more on <a href="https://example.com">example.com</a> or <a href="//example.com">example.com</a>.
+      </p>
     `;
   }
 
-  static get properties() {
-    return {
-      viewTitle: {
-        type: String,
-        value: 'About',
-        reflectToAttribute: true
-      },
-      pattern: {
-        type: String,
-        reflectToAttribute: true
-      },
-      visible: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      }
-    };
+  connectedCallback() {
+    super.connectedCallback();
+    this.viewTitle = 'About';
   }
 }
 

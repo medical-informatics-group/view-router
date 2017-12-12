@@ -1,18 +1,11 @@
-import {ViewElement} from '../view-element.js';
-import {xhrJsonGet as get} from './xhrJsonGet.js';
+import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from '../view-behavior.js';
+import get from './xhrJsonGet.js';
 
-export class ViewPost extends ViewElement {
+export class ViewPost extends ViewBehavior(PolymerElement) {
   static get template() {
     return `
-      <style>
-        :host {
-          display: none;
-        }
-
-        :host([visible]) {
-          display: block;
-        }
-      </style>
+      ${super.template}
       <h1>[[viewTitle]]</h1>
       <p>[[content]]</p>
       <p><a href="/">To latest posts</a></p>
@@ -20,26 +13,13 @@ export class ViewPost extends ViewElement {
   }
 
   static get properties() {
-    return {
+    return Object.assign({}, super.properties, {
       id: {
         type: String,
         reflectToAttribute: true
       },
-      viewTitle: {
-        type: String,
-        reflectToAttribute: true
-      },
-      content: String,
-      pattern: {
-        type: String,
-        reflectToAttribute: true
-      },
-      visible: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      }
-    };
+      content: String
+    });
   }
 
   load() {
@@ -54,7 +34,7 @@ export class ViewPost extends ViewElement {
         });
 
         if (matchingPost) {
-          this.title = matchingPost.title;
+          this.viewTitle = matchingPost.viewTitle;
           this.content = matchingPost.content;
           resolve();
         } else {

@@ -1,48 +1,34 @@
+import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from '../view-behavior.js';
 import '../node_modules/@polymer/polymer/lib/elements/dom-repeat.js';
-import {ViewElement} from '../view-element.js';
-import {xhrJsonGet as get} from './xhrJsonGet.js';
+import get from './xhrJsonGet.js';
 
-export class ViewPosts extends ViewElement {
+export class ViewPosts extends ViewBehavior(PolymerElement) {
   static get template() {
     return `
-      <style>
-        :host {
-          display: none;
-        }
-
-        :host([visible]) {
-          display: block;
-        }
-      </style>
+      ${super.template}
       <h1>[[viewTitle]]</h1>
 
       <template is="dom-repeat" items="[[posts]]">
         <p><a href="/[[item.id]]">[[item.viewTitle]]</a></p>
       </template>
+
+      Also checkout the <a href="/about">about</a> page.
     `;
   }
 
   static get properties() {
-    return {
-      viewTitle: {
-        type: String,
-        value: 'Latest posts',
-        reflectToAttribute: true
-      },
+    return Object.assign({}, super.properties, {
       posts: {
         type: Array,
-        value: [{id: 'item3', viewTitle: 'Item 3', content: 'Hej hopp!'}]
-      },
-      pattern: {
-        type: String,
-        reflectToAttribute: true
-      },
-      visible: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
+        value: []
       }
-    };
+    });
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.viewTitle = 'Latest posts';
   }
 
   load() {

@@ -1,4 +1,4 @@
-export function xhrJsonGet(url) {
+export default function xhrJsonGet(url) {
   return new Promise((resolve, reject) => {
     const request = new XMLHttpRequest();
     request.open('GET', url);

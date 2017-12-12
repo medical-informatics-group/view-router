@@ -1,39 +1,18 @@
-import {ViewElement} from '../view-element.js';
+import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from '../view-behavior.js';
 
-export class ViewNotFound extends ViewElement {
+export class ViewNotFound extends ViewBehavior(PolymerElement) {
   static get template() {
     return `
-      <style>
-        :host {
-          display: none;
-        }
-
-        :host([visible]) {
-          display: block;
-        }
-      </style>
+      ${super.template}
       <h1>[[viewTitle]]</h1>
       <p>The view that you requested does not exist.</p>
     `;
   }
 
-  static get properties() {
-    return {
-      viewTitle: {
-        type: String,
-        value: 'Not found',
-        reflectToAttribute: true
-      },
-      pattern: {
-        type: String,
-        reflectToAttribute: true
-      },
-      visible: {
-        type: Boolean,
-        value: false,
-        reflectToAttribute: true
-      }
-    };
+  connectedCallback() {
+    super.connectedCallback();
+    this.viewTitle = 'Not found';
   }
 }
 

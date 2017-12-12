@@ -1,6 +1,6 @@
 import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
 
-export class ViewRouter extends PolymerElement {
+export default class ViewRouter extends PolymerElement {
   static get template() {
     return '<slot></slot>';
   }
