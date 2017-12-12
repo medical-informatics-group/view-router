@@ -1,3 +1,4 @@
+import '../node_modules/@polymer/polymer/lib/elements/dom-repeat.js';
 import {ViewElement} from '../view-element.js';
 import {xhrJsonGet as get} from './xhrJsonGet.js';
 
@@ -14,11 +15,10 @@ export class ViewPosts extends ViewElement {
         }
       </style>
       <h1>[[viewTitle]]</h1>
-      <ul>
-        <template is="dom-repeat" items="[[posts]]">
-          <li>h<a href="/[[item.id]]">[[item.title]]</a></li>
-        </template>
-      </ul>
+
+      <template is="dom-repeat" items="[[posts]]">
+        <p><a href="/[[item.id]]">[[item.viewTitle]]</a></p>
+      </template>
     `;
   }
 
@@ -31,7 +31,7 @@ export class ViewPosts extends ViewElement {
       },
       posts: {
         type: Array,
-        value: []
+        value: [{id: 'item3', viewTitle: 'Item 3', content: 'Hej hopp!'}]
       },
       pattern: {
         type: String,
