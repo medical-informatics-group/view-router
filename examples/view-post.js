@@ -13,7 +13,7 @@ export class ViewPost extends ViewElement {
           display: block;
         }
       </style>
-      <h1>[[title]]</h1>
+      <h1>[[viewTitle]]</h1>
       <p>[[content]]</p>
       <p><a href="/">To latest posts</a></p>
     `;
@@ -25,7 +25,7 @@ export class ViewPost extends ViewElement {
         type: String,
         reflectToAttribute: true
       },
-      title: {
+      viewTitle: {
         type: String,
         reflectToAttribute: true
       },

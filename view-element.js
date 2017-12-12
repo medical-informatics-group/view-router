@@ -17,7 +17,7 @@ export class ViewElement extends PolymerElement {
 
   static get properties() {
     return {
-      title: {
+      viewTitle: {
         type: String,
         reflectToAttribute: true
       },

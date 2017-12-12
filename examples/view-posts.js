@@ -13,7 +13,7 @@ export class ViewPosts extends ViewElement {
           display: block;
         }
       </style>
-      <h1>[[title]]</h1>
+      <h1>[[viewTitle]]</h1>
       <ul>
         <template is="dom-repeat" items="[[posts]]">
           <li>h<a href="/[[item.id]]">[[item.title]]</a></li>
@@ -24,7 +24,7 @@ export class ViewPosts extends ViewElement {
 
   static get properties() {
     return {
-      title: {
+      viewTitle: {
         type: String,
         value: 'Latest posts',
         reflectToAttribute: true

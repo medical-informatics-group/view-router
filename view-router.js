@@ -102,7 +102,7 @@ export class ViewRouter extends PolymerElement {
 
   _updateDocumentTitle() {
     const title = document.title;
-    const newTitle = title.replace(ViewRouter.titleReplacePattern, `${this.view.title}$1`);
+    const newTitle = title.replace(ViewRouter.titleReplacePattern, `${this.view.viewTitle}$1`);
 
     if (title === newTitle) {
       document.title = this.view.title;

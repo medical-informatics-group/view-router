@@ -12,14 +12,14 @@ export class ViewAbout extends ViewElement {
           display: block;
         }
       </style>
-      <h1>[[title]]</h1>
+      <h1>[[viewTitle]]</h1>
       <p>This an example of the router. <a href="/">Go to the start page</a>.</p>
     `;
   }
 
   static get properties() {
     return {
-      title: {
+      viewTitle: {
         type: String,
         value: 'About',
         reflectToAttribute: true

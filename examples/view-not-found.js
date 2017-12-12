@@ -12,14 +12,14 @@ export class ViewNotFound extends ViewElement {
           display: block;
         }
       </style>
-      <h1>[[title]]</h1>
+      <h1>[[viewTitle]]</h1>
       <p>The view that you requested does not exist.</p>
     `;
   }
 
   static get properties() {
     return {
-      title: {
+      viewTitle: {
         type: String,
         value: 'Not found',
         reflectToAttribute: true
