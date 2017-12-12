@@ -80,24 +80,25 @@ export class ViewRouter extends PolymerElement {
     }
 
     matchingView.load().then(() => {
-      this.view = matchingView;
-      if (this.updateDocumentTitle) {
-        this._updateDocumentTitle();
-      }
-      this._updateViewVisibility();
+      this._selectView(matchingView);
     }, () => {
       if (fallbackView) {
-        this.view = fallbackView;
-        if (this.updateDocumentTitle) {
-          this._updateDocumentTitle();
-        }
-        this._updateViewVisibility();
+        this._selectView(fallbackView);
       } else {
         throw new Error(
           'Unable to find any matching view, consider adding one without a pattern as a fallback "not found" view.'
         );
       }
     });
+  }
+
+  _selectView(view) {
+    this.view = view;
+    if (this.updateDocumentTitle) {
+      this._updateDocumentTitle();
+    }
+    this._updateViewVisibility();
+    this.dispatchEvent(new CustomEvent('viewSelected', {detail: view}));
   }
 
   _updateDocumentTitle() {
