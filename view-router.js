@@ -98,7 +98,7 @@ export class ViewRouter extends PolymerElement {
       this._updateDocumentTitle();
     }
     this._updateViewVisibility();
-    this.dispatchEvent(new CustomEvent('viewSelected', {detail: view}));
+    this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
   }
 
   _updateDocumentTitle() {
