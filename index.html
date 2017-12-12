@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Router example</title>
+    <title>Loading... - Router example</title>
     <script src="node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
     <script type="module" src="view-router.js"></script>
     <script type="module" src="examples/view-posts.js"></script>
@@ -10,7 +10,7 @@
     <script type="module" src="examples/view-not-found.js"></script>
   </head>
   <body>
-    <view-router>
+    <view-router update-document-title>
       <view-posts pattern="/"></view-posts>
       <view-about pattern="/about"></view-about>
       <view-post pattern="/:id"></view-post>

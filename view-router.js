@@ -6,7 +6,14 @@ export class ViewRouter extends PolymerElement {
   }
 
   static get properties() {
-    return {view: Object};
+    return {
+      view: Object,
+      updateDocumentTitle: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      }
+    };
   }
 
   constructor() {
@@ -46,11 +53,9 @@ export class ViewRouter extends PolymerElement {
     let fallbackView;
 
     Array.from(this.children).forEach((view) => {
-console.log(view);
       if (!matchingView && typeof view.pattern === 'string') {
         const parameters = this._getParametersFromPattern(view.pattern);
         if (parameters) {
-console.log('setting view', view);
           matchingView = view;
           Object.keys(parameters).forEach((name) => {
             view[name] = parameters[name];
@@ -58,7 +63,6 @@ console.log('setting view', view);
         }
       } else if (!fallbackView && !view.pattern && typeof view.pattern !== 'string') {
         fallbackView = view;
-console.log('setting fallback', view);
       }
     });
 
@@ -74,10 +78,17 @@ console.log('setting fallback', view);
 
     matchingView.load().then(() => {
       this.view = matchingView;
-      this._updateViewVisibility(matchingView);
+      if (this.updateDocumentTitle) {
+        this._updateDocumentTitle();
+      }
+      this._updateViewVisibility();
     }, () => {
       if (fallbackView) {
-        this._updateViewVisibility(fallbackView);
+        this.view = fallbackView;
+        if (this.updateDocumentTitle) {
+          this._updateDocumentTitle();
+        }
+        this._updateViewVisibility();
       } else {
         throw new Error(
           'Unable to find any matching view, consider adding one without a pattern as a fallback "not found" view.'
@@ -86,9 +97,20 @@ console.log('setting fallback', view);
     });
   }
 
-  _updateViewVisibility(viewToShow) {
+  _updateDocumentTitle() {
+    const title = document.title;
+    const newTitle = title.replace(/^.*?(\s*[-–]\s+[^-–]+)$/, `${this.view.title}$1`);
+
+    if (title === newTitle) {
+      document.title = this.view.title;
+    } else {
+      document.title = newTitle;
+    }
+  }
+
+  _updateViewVisibility() {
     Array.from(this.children).forEach((view) => {
-      if (view === viewToShow) {
+      if (view === this.view) {
         view.visible = true;
       } else {
         view.visible = false;
