@@ -43,6 +43,11 @@ export class ViewPost extends ViewBehavior(PolymerElement) {
       }, reject);
     });
   }
+
+  unload() {
+    this.viewTitle = 'Loading post...';
+    this.content = '';
+  }
 }
 
 customElements.define('view-post', ViewPost);

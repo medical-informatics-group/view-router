@@ -1,6 +1,6 @@
 {
   "name": "mig-view-router",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "Polymer 3 router and view web components",
   "main": "index.html",
   "author": "Fredrik Söderström <fredrik.soderstrom@cambio.se>",
