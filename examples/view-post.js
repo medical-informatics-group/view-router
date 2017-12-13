@@ -24,7 +24,7 @@ export class ViewPost extends ViewBehavior(PolymerElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('examples/posts.json').then((response) => {
+      get('posts.json').then((response) => {
         let matchingPost;
 
         response.body.forEach((post) => {

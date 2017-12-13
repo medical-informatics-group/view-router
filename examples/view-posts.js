@@ -33,7 +33,7 @@ export class ViewPosts extends ViewBehavior(PolymerElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('examples/posts.json').then((response) => {
+      get('posts.json').then((response) => {
         this.posts = response.body;
         resolve();
       }, reject);
