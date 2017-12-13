@@ -1,5 +1,5 @@
-import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
-import ViewBehavior from '../view-behavior.js';
+import {Element as PolymerElement} from './node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
 
 export class ViewNotFound extends ViewBehavior(PolymerElement) {
   static get template() {

@@ -1,4 +1,4 @@
-import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
+import {Element as PolymerElement} from '../@polymer/polymer/polymer-element.js';
 
 export default class ViewRouter extends PolymerElement {
   static get template() {

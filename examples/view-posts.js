@@ -1,6 +1,6 @@
-import {Element as PolymerElement} from '../node_modules/@polymer/polymer/polymer-element.js';
-import ViewBehavior from '../view-behavior.js';
-import '../node_modules/@polymer/polymer/lib/elements/dom-repeat.js';
+import {Element as PolymerElement} from './node_modules/@polymer/polymer/polymer-element.js';
+import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
+import './node_modules/@polymer/polymer/lib/elements/dom-repeat.js';
 import get from './xhrJsonGet.js';
 
 export class ViewPosts extends ViewBehavior(PolymerElement) {

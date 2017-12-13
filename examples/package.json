@@ -1,22 +1,15 @@
 {
-  "name": "mig-view-router",
-  "version": "1.0.3",
-  "description": "Polymer 3 router and view web components",
+  "name": "mig-view-router-example",
+  "version": "1.0.0",
+  "description": "An example for the mig-view-router package",
   "main": "index.html",
   "author": "Fredrik Söderström <fredrik.soderstrom@cambio.se>",
-  "repository": "medical-informatics-group/view-router",
   "license": "MIT",
   "flat": true,
   "dependencies": {
     "@polymer/polymer": "^3.0.0-pre.1",
-    "@webcomponents/webcomponentsjs": "^1.0.20"
-  },
-  "devDependencies": {
-    "eslint": "^4.6.1",
-    "eslint-config-strict": "^14.0.0",
-    "eslint-plugin-filenames": "^1.2.0",
-    "eslint-plugin-html": "^3.2.1",
-    "eslint-plugin-json": "^1.2.0"
+    "@webcomponents/webcomponentsjs": "^1.0.20",
+    "mig-view-router": "^1.0.3"
   },
   "resolutions": {
     "chalk": "2.3.0",
