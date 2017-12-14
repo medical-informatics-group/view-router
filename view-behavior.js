@@ -37,5 +37,14 @@ export default function ViewBehavior(superclass) {
     load() {
       return new Promise((resolve) => resolve());
     }
+
+    unloadRouters() {
+      Array.from(this.root.querySelectorAll('view-router')).forEach((router) => {
+        if (router._updateViewVisibility instanceof Function) {
+          router.view = undefined;
+          router._updateViewVisibility();
+        }
+      });
+    }
   };
 }

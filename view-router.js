@@ -129,6 +129,10 @@ export default class ViewRouter extends PolymerElement {
           view.unload();
         }
 
+        if (view.visible && view.unloadRouters instanceof Function) {
+          view.unloadRouters();
+        }
+
         view.visible = false;
       }
     });
