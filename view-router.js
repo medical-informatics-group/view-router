@@ -50,13 +50,11 @@ export default class ViewRouter extends PolymerElement {
     let matches = true;
 
     patternParts.forEach((patternPart, index) => {
-      for (let i = patternParts.length - 1; i >= 0; i--) {
-        if (patternPart.charAt(0) === ':' && urlParts[i]) {
-          const name = patternPart.substr(1);
-          parameters[name] = urlParts[index];
-        } else if (patternPart !== urlParts[index] && patternPart !== '*') {
-          matches = false;
-        }
+      if (patternPart.charAt(0) === ':' && urlParts[index]) {
+        const name = patternPart.substr(1);
+        parameters[name] = urlParts[index];
+      } else if (patternPart !== urlParts[index] && patternPart !== '*') {
+        matches = false;
       }
     });
 
