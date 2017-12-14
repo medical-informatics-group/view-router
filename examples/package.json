@@ -9,7 +9,7 @@
   "dependencies": {
     "@polymer/polymer": "^3.0.0-pre.1",
     "@webcomponents/webcomponentsjs": "^1.0.20",
-    "mig-view-router": "^1.2.0"
+    "mig-view-router": "^1.2.1"
   },
   "resolutions": {
     "chalk": "2.3.0",
