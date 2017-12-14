@@ -16,10 +16,16 @@ export default class ViewRouter extends PolymerElement {
     };
   }
 
-  constructor() {
-    super();
-    window.addEventListener('popstate', this._updateMatchingView.bind(this));
-    setTimeout(this._updateMatchingView.bind(this), 0);
+  connectedCallback() {
+    super.connectedCallback();
+    this._boundUpdateMatchingViews = this._updateMatchingViews.bind(this);
+    window.addEventListener('popstate', this._boundUpdateMatchingViews);
+    setTimeout(this._boundUpdateMatchingViews.bind(this), 0);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    window.removeEventListener('popstate', this._boundUpdateMatchingViews);
   }
 
   _getPathParts(path) {
@@ -29,20 +35,30 @@ export default class ViewRouter extends PolymerElement {
       .split(ViewRouter.splitSlashPattern);
   }
 
+  _getBasePath() {
+    if (window.document.head.querySelector('base')) {
+      return window.location.href.substr(window.document.baseURI.length);
+    }
+
+    return window.location.pathname.substr(1);
+  }
+
   _getParametersFromPattern(pattern) {
     const patternParts = this._getPathParts(pattern);
-    const urlParts = this._getPathParts(window.location.pathname);
+    const urlParts = this._getPathParts(this._getBasePath());
     const parameters = {};
     let matches = true;
 
-    for (let i = patternParts.length - 1; i >= 0; i--) {
-      if (patternParts[i].charAt(0) === ':' && urlParts[i]) {
-        const name = patternParts[i].substr(1);
-        parameters[name] = urlParts[i];
-      } else if (patternParts[i] !== urlParts[i]) {
-        matches = false;
+    patternParts.forEach((patternPart, index) => {
+      for (let i = patternParts.length - 1; i >= 0; i--) {
+        if (patternPart.charAt(0) === ':' && urlParts[i]) {
+          const name = patternPart.substr(1);
+          parameters[name] = urlParts[index];
+        } else if (patternPart !== urlParts[index] && patternPart !== '*') {
+          matches = false;
+        }
       }
-    }
+    });
 
     if (matches) {
       return parameters;
@@ -51,7 +67,7 @@ export default class ViewRouter extends PolymerElement {
     return undefined;
   }
 
-  _updateMatchingView() {
+  _updateMatchingViews() {
     let matchingView;
     let fallbackView;
 
@@ -69,27 +85,19 @@ export default class ViewRouter extends PolymerElement {
       }
     });
 
-    if (!matchingView) {
-      if (fallbackView) {
-        matchingView = fallbackView;
-      } else {
-        throw new Error(
-          'Unable to find any matching view, consider adding one without a pattern as a fallback "not found" view.'
-        );
-      }
+    if (!matchingView && fallbackView) {
+      matchingView = fallbackView;
     }
 
-    matchingView.load().then(() => {
-      this._selectView(matchingView);
-    }, () => {
-      if (fallbackView) {
-        this._selectView(fallbackView);
-      } else {
-        throw new Error(
-          'Unable to find any matching view, consider adding one without a pattern as a fallback "not found" view.'
-        );
-      }
-    });
+    if (matchingView && matchingView.load instanceof Function) {
+      matchingView.load().then(() => {
+        this._selectView(matchingView);
+      }, () => {
+        if (fallbackView) {
+          this._selectView(fallbackView);
+        }
+      });
+    }
   }
 
   _selectView(view) {
@@ -113,7 +121,9 @@ export default class ViewRouter extends PolymerElement {
   _updateViewVisibility() {
     Array.from(this.children).forEach((view) => {
       if (view === this.view) {
-        view.visible = true;
+        setTimeout(() => {
+          view.visible = true;
+        }, 10);
       } else {
         if (view.visible && view.unload instanceof Function) {
           view.unload();

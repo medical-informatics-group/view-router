@@ -31,8 +31,10 @@ export default function LinkPushStateBehavior(superclass) {
       const target = event.path[0];
       if (target.tagName === 'A' && !isExternalUrl(target.href)) {
         event.preventDefault();
-        window.history.pushState(undefined, target.textContent, target.href);
-        window.dispatchEvent(new window.PopStateEvent('popstate'));
+        if (target.href !== window.location.href) {
+          window.history.pushState(undefined, target.textContent, target.href);
+          window.dispatchEvent(new window.PopStateEvent('popstate'));
+        }
       }
     }
   };

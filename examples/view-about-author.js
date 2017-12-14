@@ -2,40 +2,42 @@ import {Element as PolymerElement} from './node_modules/@polymer/polymer/polymer
 import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
 import get from './xhrJsonGet.js';
 
-export class ViewPost extends ViewBehavior(PolymerElement) {
+export class ViewAboutAuthor extends ViewBehavior(PolymerElement) {
   static get template() {
     return `
       ${super.template}
-      <h1>[[viewTitle]]</h1>
+      <h1>[[name]]</h1>
       <p>[[content]]</p>
-      <p><a href="/">To latest posts</a></p>
+      <p><a href="/about">Show all authors</a></p>
     `;
   }
 
   static get properties() {
     return Object.assign({}, super.properties, {
-      postId: {
+      authorId: {
         type: String,
         reflectToAttribute: true
       },
+      name: String,
       content: String
     });
   }
 
   load() {
     return new Promise((resolve, reject) => {
-      get('posts.json').then((response) => {
-        let matchingPost;
+      get('authors.json').then((response) => {
+        let matchingAuthor;
 
-        response.body.forEach((post) => {
-          if (post.id === this.postId) {
-            matchingPost = post;
+        response.body.forEach((author) => {
+          if (author.id === this.authorId) {
+            matchingAuthor = author;
           }
         });
 
-        if (matchingPost) {
-          this.viewTitle = matchingPost.title;
-          this.content = matchingPost.content;
+        if (matchingAuthor) {
+          this.viewTitle = `About ${matchingAuthor.name}`;
+          this.name = matchingAuthor.name;
+          this.content = matchingAuthor.content;
           resolve();
         } else {
           reject(new Error('Not found'));
@@ -45,9 +47,10 @@ export class ViewPost extends ViewBehavior(PolymerElement) {
   }
 
   unload() {
-    this.viewTitle = 'Loading post...';
+    this.viewTitle = 'Loading author...';
+    this.name = '';
     this.content = '';
   }
 }
 
-customElements.define('view-post', ViewPost);
+customElements.define('view-about-author', ViewAboutAuthor);
