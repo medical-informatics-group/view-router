@@ -91,7 +91,9 @@ export default class ViewRouter extends PolymerElement {
       if (matchingView.load instanceof Function) {
         matchingView.load().then(() => {
           this._setSelectedView(matchingView);
-        }, () => {
+        }, (loadError) => {
+          this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view: matchingView, error: loadError}}));
+
           if (fallbackView) {
             this._setSelectedView(fallbackView);
           } else {
