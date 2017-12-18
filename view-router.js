@@ -87,18 +87,32 @@ export default class ViewRouter extends PolymerElement {
       matchingView = fallbackView;
     }
 
-    if (matchingView && matchingView.load instanceof Function) {
-      matchingView.load().then(() => {
-        this._selectView(matchingView);
-      }, () => {
-        if (fallbackView) {
-          this._selectView(fallbackView);
-        }
-      });
+    if (matchingView) {
+      if (matchingView.load instanceof Function) {
+        matchingView.load().then(() => {
+          this._setSelectedView(matchingView);
+        }, () => {
+          if (fallbackView) {
+            this._setSelectedView(fallbackView);
+          } else {
+            this._setSelectedViewToNone();
+          }
+        });
+      } else {
+        this._setSelectedView(matchingView);
+      }
+    } else {
+      this._setSelectedViewToNone();
     }
   }
 
-  _selectView(view) {
+  _setSelectedViewToNone() {
+    this.view = undefined;
+    this._updateViewVisibility();
+    this.dispatchEvent(new CustomEvent('view-no-match'));
+  }
+
+  _setSelectedView(view) {
     this.view = view;
     if (this.updateDocumentTitle) {
       this._updateDocumentTitle();
@@ -125,10 +139,6 @@ export default class ViewRouter extends PolymerElement {
       } else {
         if (view.visible && view.unload instanceof Function) {
           view.unload();
-        }
-
-        if (view.visible && view.unloadRouters instanceof Function) {
-          view.unloadRouters();
         }
 
         view.visible = false;
