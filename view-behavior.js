@@ -1,9 +1,10 @@
+import {html} from '@polymer/lit-element/lit-element.js';
 import LinkPushStateBehavior from './link-push-state-behavior.js';
 
 export default function ViewBehavior(superclass) {
   return class extends LinkPushStateBehavior(superclass) {
-    static get template() {
-      return `
+    _render() {
+      return html`
         <style>
           :host {
             display: none;

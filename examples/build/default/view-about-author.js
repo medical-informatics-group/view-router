@@ -1,13 +1,10 @@
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-import {render} from './node_modules/lit-html';
-
-import ViewBehavior from 'mig-view-router/view-behavior.js';
+import { LitElement, html } from "./node_modules/@polymer/lit-element/lit-element.js";
+import ViewBehavior from "./node_modules/mig-view-router/view-behavior.js";
 import get from './xhrJsonGet.js';
-
 export class ViewAboutAuthor extends ViewBehavior(LitElement) {
   _render(props) {
     return html`
-      ${render(super._render(), this)}
+      ${super._render()}
       <h1>${props.name}</h1>
       <p>${props.content}</p>
       <p><a href="/about">Show all authors</a></p>
@@ -27,10 +24,9 @@ export class ViewAboutAuthor extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('authors.json').then((response) => {
+      get('authors.json').then(response => {
         let matchingAuthor;
-
-        response.body.forEach((author) => {
+        response.body.forEach(author => {
           if (author.id === this.authorId) {
             matchingAuthor = author;
           }
@@ -53,6 +49,6 @@ export class ViewAboutAuthor extends ViewBehavior(LitElement) {
     this.name = '';
     this.content = '';
   }
-}
 
+}
 customElements.define('view-about-author', ViewAboutAuthor);

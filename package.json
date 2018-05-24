@@ -1,6 +1,6 @@
 {
   "name": "mig-view-router",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "Polymer 3 router and view web components",
   "main": "index.html",
   "author": "Fredrik Söderström <fredrik.soderstrom@cambio.se>",
@@ -15,6 +15,7 @@
   ],
   "flat": true,
   "dependencies": {
+    "@polymer/lit-element": "^0.5.1",
     "@polymer/polymer": "^3.0.0-pre.1",
     "@webcomponents/webcomponentsjs": "^1.0.20"
   },
@@ -41,6 +42,8 @@
     "domelementtype": "1.3.0",
     "domhandler": "2.4.1",
     "domutils": "1.6.2",
-    "entities": "1.1.1"
+    "entities": "1.1.1",
+    "has-flag": "3.0.0",
+    "process-nextick-args": "2.0.0"
   }
 }

@@ -1,16 +1,17 @@
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-import {render} from './node_modules/@polymer/lit-html';
-
-import ViewBehavior from 'mig-view-router/view-behavior.js';
-import '@polymer/polymer/lib/elements/dom-repeat.js';
+import { LitElement, html } from "./node_modules/@polymer/lit-element/lit-element.js";
+import ViewBehavior from "./node_modules/mig-view-router/view-behavior.js";
+import "./node_modules/@polymer/polymer/lib/elements/dom-repeat.js";
 import get from './xhrJsonGet.js';
-
 export class ViewPosts extends ViewBehavior(LitElement) {
-  _render({posts}) {
+  _render({
+    posts
+  }) {
     return html`
-    ${render(super._render(), this)}
+      ${super._render()}
       <h1>${this.viewTitle}</h1>
-        ${posts && posts.map((item) => html`<p><a href="/${item.id}">${item.viewTitle}</a></p>`)}
+        ${posts.map(item => html`<p><a href="/${item.id}">${item.viewTitle}</a></p>`)}
+      </template>
+
       Also checkout the <a href="/about">about</a> page.
     `;
   }
@@ -24,10 +25,6 @@ export class ViewPosts extends ViewBehavior(LitElement) {
     });
   }
 
-  ready() {
-    this.load().then(() => console.log('posts loaded'));
-  }
-
   connectedCallback() {
     super.connectedCallback();
     this.viewTitle = 'Latest posts';
@@ -35,12 +32,12 @@ export class ViewPosts extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('posts.json').then((response) => {
+      get('posts.json').then(response => {
         this.posts = response.body;
         resolve();
       }, reject);
     });
   }
-}
 
+}
 customElements.define('view-posts', ViewPosts);

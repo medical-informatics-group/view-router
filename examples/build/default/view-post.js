@@ -1,13 +1,11 @@
-import {LitElement, html} from './node_modules/@polymer/lit-element/lit-element.js';
-import {render} from './node_modules/@polymer/lit-html';
+import { LitElement, html } from './node_modules/@polymer/lit-element/lit-element.js';
 import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
 import get from './xhrJsonGet.js';
-
 export class ViewPost extends ViewBehavior(LitElement) {
   _render() {
     return html`
-    ${render(super._render(), this)}
-    <h1>${this.viewTitle}</h1>
+      ${super._render()}
+      <h1>${this.viewTitle}</h1>
       <p>${this.content}</p>
       <p><a href="/">To latest posts</a></p>
     `;
@@ -25,10 +23,9 @@ export class ViewPost extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('posts.json').then((response) => {
+      get('posts.json').then(response => {
         let matchingPost;
-
-        response.body.forEach((post) => {
+        response.body.forEach(post => {
           if (post.id === this.postId) {
             matchingPost = post;
           }
@@ -49,6 +46,6 @@ export class ViewPost extends ViewBehavior(LitElement) {
     this.viewTitle = 'Loading post...';
     this.content = '';
   }
-}
 
+}
 customElements.define('view-post', ViewPost);

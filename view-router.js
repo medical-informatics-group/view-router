@@ -1,8 +1,8 @@
-import {Element as PolymerElement} from '../@polymer/polymer/polymer-element.js';
+import {LitElement, html} from '../@polymer/lit-element/lit-element.js';
 
-export default class ViewRouter extends PolymerElement {
-  static get template() {
-    return '<slot></slot>';
+export default class ViewRouter extends LitElement {
+  _render() {
+    return html`<slot></slot>`;
   }
 
   static get properties() {
@@ -48,7 +48,6 @@ export default class ViewRouter extends PolymerElement {
     const urlParts = this._getPathParts(this._getBasePath());
     const parameters = {};
     let matches = true;
-
     patternParts.forEach((patternPart, index) => {
       if (patternPart.charAt(0) === ':' && urlParts[index]) {
         const name = patternPart.substr(1);

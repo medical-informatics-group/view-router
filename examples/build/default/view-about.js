@@ -1,16 +1,13 @@
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-import {render} from './node_modules/lit-html';
-
-import ViewBehavior from 'mig-view-router/view-behavior.js';
+import { LitElement, html } from "./node_modules/@polymer/lit-element/lit-element.js";
+import ViewBehavior from "./node_modules/mig-view-router/view-behavior.js";
 import './view-about-author.js';
 import './view-about-authors.js';
 import './view-not-found.js';
-
 export class ViewAbout extends ViewBehavior(LitElement) {
   _render() {
+    console.log(super._render());
     return html`
-      <h1>test</h1>
-      ${render(super._render(), this)}
+      ${super._render()()}
       <h1>${this.viewTitle}</h1>
       <p>
         This an example of the router. <a href="/">Go to the start page</a>.
@@ -28,6 +25,6 @@ export class ViewAbout extends ViewBehavior(LitElement) {
     super.connectedCallback();
     this.viewTitle = 'About';
   }
-}
 
+}
 customElements.define('view-about', ViewAbout);
