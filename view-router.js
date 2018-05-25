@@ -64,6 +64,23 @@ export default class ViewRouter extends LitElement {
     return undefined;
   }
 
+  _loadView(view, fallbackView) {
+    if (view.load instanceof Function) {
+      view.load().then(() => {
+        this._setSelectedView(view);
+      }, (loadError) => {
+        this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view, error: loadError}}));
+        if (fallbackView) {
+          this._setSelectedView(fallbackView);
+        } else {
+          this._setSelectedViewToNone();
+        }
+      });
+    } else {
+      this._setSelectedView(view);
+    }
+  }
+
   _updateMatchingViews() {
     let matchingView;
     let fallbackView;
@@ -87,20 +104,14 @@ export default class ViewRouter extends LitElement {
     }
 
     if (matchingView) {
-      if (matchingView.load instanceof Function) {
-        matchingView.load().then(() => {
-          this._setSelectedView(matchingView);
-        }, (loadError) => {
-          this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view: matchingView, error: loadError}}));
-
-          if (fallbackView) {
-            this._setSelectedView(fallbackView);
-          } else {
-            this._setSelectedViewToNone();
-          }
-        });
+      if (matchingView.load) {
+        this._loadView(matchingView, fallbackView);
       } else {
-        this._setSelectedView(matchingView);
+        const viewReadyListener = () => {
+          matchingView.removeEventListener('view-ready', viewReadyListener);
+          this._loadView(matchingView, fallbackView);
+        };
+        matchingView.addEventListener('view-ready', viewReadyListener);
       }
     } else {
       this._setSelectedViewToNone();
@@ -110,7 +121,7 @@ export default class ViewRouter extends LitElement {
   _setSelectedViewToNone() {
     this.view = undefined;
     this._updateViewVisibility();
-    this.dispatchEvent(new CustomEvent('view-no-match'));
+    this.dispatchEvent(new Event('view-no-match'));
   }
 
   _setSelectedView(view) {

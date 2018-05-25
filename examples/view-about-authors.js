@@ -1,7 +1,6 @@
 import {LitElement, html} from '@polymer/lit-element/lit-element.js';
 import ViewBehavior from 'mig-view-router/view-behavior.js';
 import '@polymer/polymer/lib/elements/dom-repeat.js';
-import get from './xhrJsonGet.js';
 
 export class ViewAboutAuthors extends ViewBehavior(LitElement) {
   _render({authors}) {
@@ -27,10 +26,10 @@ export class ViewAboutAuthors extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('authors.json').then((response) => {
-        this.authors = response.body;
+      fetch('authors.json').then((response) => response.json()).then((data) => {
+        this.authors = data;
         resolve();
-      }, reject);
+      }).catch(reject);
     });
   }
 }

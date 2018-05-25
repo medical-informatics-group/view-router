@@ -1,7 +1,6 @@
 import {LitElement, html} from '@polymer/lit-element/lit-element.js';
 
 import ViewBehavior from 'mig-view-router/view-behavior.js';
-// import get from './xhrJsonGet.js';
 
 export class ViewPosts extends ViewBehavior(LitElement) {
   _render({posts}) {
@@ -20,10 +19,6 @@ export class ViewPosts extends ViewBehavior(LitElement) {
         value: []
       }
     });
-  }
-
-  _firstRendered() {
-    this.load();
   }
 
   connectedCallback() {

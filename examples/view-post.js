@@ -1,6 +1,5 @@
 import {LitElement, html} from './node_modules/@polymer/lit-element/lit-element.js';
 import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
-import get from './xhrJsonGet.js';
 
 export class ViewPost extends ViewBehavior(LitElement) {
   _render() {
@@ -24,15 +23,8 @@ export class ViewPost extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('posts.json').then((response) => {
-        let matchingPost;
-
-        response.body.forEach((post) => {
-          if (post.id === this.postId) {
-            matchingPost = post;
-          }
-        });
-
+      fetch('posts.json').then((response) => response.json()).then((data) => {
+        const matchingPost = data.find((post) => post.id === this.postId);
         if (matchingPost) {
           this.viewTitle = matchingPost.title;
           this.content = matchingPost.content;

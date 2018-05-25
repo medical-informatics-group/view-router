@@ -35,6 +35,13 @@ export default function ViewBehavior(superclass) {
       return true;
     }
 
+    _firstRendered() {
+      if (super._firstRendered instanceof Function) {
+        super._firstRendered();
+      }
+      this.dispatchEvent(new Event('view-ready'));
+    }
+
     _updateDocumentTitle() {
       const newTitle = document.title.replace(ViewBehavior.titleReplacePattern, `${this.viewTitle}$1`);
       if (document.title === newTitle) {
