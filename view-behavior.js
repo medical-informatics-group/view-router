@@ -1,9 +1,13 @@
+import {html} from '@polymer/lit-element/lit-element.js';
 import LinkPushStateBehavior from './link-push-state-behavior.js';
 
 export default function ViewBehavior(superclass) {
   return class extends LinkPushStateBehavior(superclass) {
-    static get template() {
-      return `
+    _render() {
+      if (this.visible !== this.getAttribute('visible')) {
+        this._visibilityChanged(this.visible);
+      }
+      return html`
         <style>
           :host {
             display: none;
@@ -14,6 +18,37 @@ export default function ViewBehavior(superclass) {
           }
         </style>
       `;
+    }
+
+    _visibilityChanged(visible) {
+      if (visible) {
+        this.setAttribute('visible', '');
+      } else {
+        this.removeAttribute('visible');
+      }
+    }
+
+    _shouldRender(props, changedProps) {
+      if (props.visible && typeof changedProps.viewTitle === 'string' && changedProps.viewTitle !== document.title) {
+        this._updateDocumentTitle(props.viewTitle);
+      }
+      return true;
+    }
+
+    _firstRendered() {
+      if (super._firstRendered instanceof Function) {
+        super._firstRendered();
+      }
+      this.dispatchEvent(new Event('view-ready'));
+    }
+
+    _updateDocumentTitle() {
+      const newTitle = document.title.replace(ViewBehavior.titleReplacePattern, `${this.viewTitle}$1`);
+      if (document.title === newTitle) {
+        document.title = this.viewTitle;
+      } else {
+        document.title = newTitle;
+      }
     }
 
     static get properties() {
@@ -39,3 +74,5 @@ export default function ViewBehavior(superclass) {
     }
   };
 }
+
+ViewBehavior.titleReplacePattern = /^.*?(\s*[-–]\s+[^-–]+)$/;

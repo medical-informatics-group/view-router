@@ -1,8 +1,8 @@
-import {Element as PolymerElement} from '../@polymer/polymer/polymer-element.js';
+import {LitElement, html} from '../@polymer/lit-element/lit-element.js';
 
-export default class ViewRouter extends PolymerElement {
-  static get template() {
-    return '<slot></slot>';
+export default class ViewRouter extends LitElement {
+  _render() {
+    return html`<slot></slot>`;
   }
 
   static get properties() {
@@ -48,7 +48,6 @@ export default class ViewRouter extends PolymerElement {
     const urlParts = this._getPathParts(this._getBasePath());
     const parameters = {};
     let matches = true;
-
     patternParts.forEach((patternPart, index) => {
       if (patternPart.charAt(0) === ':' && urlParts[index]) {
         const name = patternPart.substr(1);
@@ -65,20 +64,37 @@ export default class ViewRouter extends PolymerElement {
     return undefined;
   }
 
+  _loadView(view, fallbackView) {
+    if (view.load instanceof Function) {
+      view.load().then(() => {
+        this._setSelectedView(view);
+      }, (loadError) => {
+        this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view, error: loadError}}));
+        if (fallbackView) {
+          this._setSelectedView(fallbackView);
+        } else {
+          this._setSelectedViewToNone();
+        }
+      });
+    } else {
+      this._setSelectedView(view);
+    }
+  }
+
   _updateMatchingViews() {
     let matchingView;
     let fallbackView;
-
     Array.from(this.children).forEach((view) => {
-      if (!matchingView && typeof view.pattern === 'string') {
-        const parameters = this._getParametersFromPattern(view.pattern);
+      const viewPattern = view.getAttribute('pattern');
+      if (!matchingView && typeof viewPattern === 'string') {
+        const parameters = this._getParametersFromPattern(viewPattern);
         if (parameters) {
           matchingView = view;
           Object.keys(parameters).forEach((name) => {
             view[name] = parameters[name];
           });
         }
-      } else if (!fallbackView && !view.pattern && typeof view.pattern !== 'string') {
+      } else if (!fallbackView && !viewPattern && typeof viewPattern !== 'string') {
         fallbackView = view;
       }
     });
@@ -88,20 +104,14 @@ export default class ViewRouter extends PolymerElement {
     }
 
     if (matchingView) {
-      if (matchingView.load instanceof Function) {
-        matchingView.load().then(() => {
-          this._setSelectedView(matchingView);
-        }, (loadError) => {
-          this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view: matchingView, error: loadError}}));
-
-          if (fallbackView) {
-            this._setSelectedView(fallbackView);
-          } else {
-            this._setSelectedViewToNone();
-          }
-        });
+      if (matchingView.load) {
+        this._loadView(matchingView, fallbackView);
       } else {
-        this._setSelectedView(matchingView);
+        const viewReadyListener = () => {
+          matchingView.removeEventListener('view-ready', viewReadyListener);
+          this._loadView(matchingView, fallbackView);
+        };
+        matchingView.addEventListener('view-ready', viewReadyListener);
       }
     } else {
       this._setSelectedViewToNone();
@@ -111,25 +121,18 @@ export default class ViewRouter extends PolymerElement {
   _setSelectedViewToNone() {
     this.view = undefined;
     this._updateViewVisibility();
-    this.dispatchEvent(new CustomEvent('view-no-match'));
+    this.dispatchEvent(new Event('view-no-match'));
   }
 
   _setSelectedView(view) {
     this.view = view;
-    if (this.updateDocumentTitle) {
-      this._updateDocumentTitle();
+    if (this.hasAttribute('update-document-title')) {
+      if (view._updateDocumentTitle) {
+        view._updateDocumentTitle();
+      }
     }
     this._updateViewVisibility();
     this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
-  }
-
-  _updateDocumentTitle() {
-    const newTitle = document.title.replace(ViewRouter.titleReplacePattern, `${this.view.viewTitle}$1`);
-    if (document.title === newTitle) {
-      document.title = this.view.viewTitle;
-    } else {
-      document.title = newTitle;
-    }
   }
 
   _updateViewVisibility() {
@@ -142,7 +145,6 @@ export default class ViewRouter extends PolymerElement {
         if (view.visible && view.unload instanceof Function) {
           view.unload();
         }
-
         view.visible = false;
       }
     });

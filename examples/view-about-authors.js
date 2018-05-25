@@ -1,15 +1,12 @@
-import {Element as PolymerElement} from './node_modules/@polymer/polymer/polymer-element.js';
-import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
-import './node_modules/@polymer/polymer/lib/elements/dom-repeat.js';
-import get from './xhrJsonGet.js';
+import {LitElement, html} from '@polymer/lit-element/lit-element.js';
+import ViewBehavior from 'mig-view-router/view-behavior.js';
+import '@polymer/polymer/lib/elements/dom-repeat.js';
 
-export class ViewAboutAuthors extends ViewBehavior(PolymerElement) {
-  static get template() {
-    return `
-      ${super.template}
-      <template is="dom-repeat" items="[[authors]]">
-        <p><a href="/about/[[item.id]]">[[item.name]]</a></p>
-      </template>
+export class ViewAboutAuthors extends ViewBehavior(LitElement) {
+  _render({authors}) {
+    return html`
+    ${html(super._render().strings)}
+    ${authors && authors.map((item) => html`<p><a href="/about/${item.id}">${item.name}</a></p>`)}
     `;
   }
 
@@ -29,10 +26,10 @@ export class ViewAboutAuthors extends ViewBehavior(PolymerElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      get('authors.json').then((response) => {
-        this.authors = response.body;
+      fetch('authors.json').then((response) => response.json()).then((data) => {
+        this.authors = data;
         resolve();
-      }, reject);
+      }).catch(reject);
     });
   }
 }

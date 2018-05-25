@@ -1,12 +1,13 @@
-import {Element as PolymerElement} from './node_modules/@polymer/polymer/polymer-element.js';
-import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
+import {LitElement, html} from '@polymer/lit-element/lit-element.js';
 
-export class ViewNotFound extends ViewBehavior(PolymerElement) {
-  static get template() {
-    return `
-      ${super.template}
-      <h1>[[viewTitle]]</h1>
-      <p>The view that you requested does not exist.</p>
+import ViewBehavior from 'mig-view-router/view-behavior.js';
+
+export class ViewNotFound extends ViewBehavior(LitElement) {
+  _render() {
+    return html`
+    ${html(super._render().strings)}
+    <h1>${this.viewTitle}</h1>
+    <p>The view that you requested does not exist.</p>
     `;
   }
 

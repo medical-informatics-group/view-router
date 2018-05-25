@@ -34,17 +34,15 @@ Below is an example, basically you have two types of tags/web components, the vi
       </body>
     </html>
 
-### Starting the go web server in examples (requires go and yarn to be installed)
+### Starting the go web server in examples (requires polymer-cli and yarn to be installed)
 
     $ cd examples/
     $ yarn install
-    $ go get -u github.com/labstack/echo
-    $ go get -u github.com/mojlighetsministeriet/utils
-    $ go run server-example.go
+    $ polymer serve
 
-To change port to 4000 (or something else), replace the last line with:
+To change port to 4000 (or something else), add --port or -p to polymer serve command:
 
-    $ PORT=4000 go run server-example.go
+    $ polymer serve --port 4000
 
 ## How does it work
 
