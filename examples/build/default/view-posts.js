@@ -1,4 +1,4 @@
-import { LitElement, html } from "./node_modules/@polymer/lit-element/lit-element.js";
+import {LitElement, html} from "./node_modules/@polymer/lit-element/lit-element.js";
 import ViewBehavior from "./node_modules/mig-view-router/view-behavior.js";
 import "./node_modules/@polymer/polymer/lib/elements/dom-repeat.js";
 import get from './xhrJsonGet.js';
@@ -9,7 +9,7 @@ export class ViewPosts extends ViewBehavior(LitElement) {
     return html`
       ${super._render()}
       <h1>${this.viewTitle}</h1>
-        ${posts.map(item => html`<p><a href="/${item.id}">${item.viewTitle}</a></p>`)}
+        ${posts.map((item) => html`<p><a href="/${item.id}">${item.viewTitle}</a></p>`)}
       </template>
 
       Also checkout the <a href="/about">about</a> page.

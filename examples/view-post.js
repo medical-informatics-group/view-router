@@ -1,15 +1,14 @@
 import {LitElement, html} from './node_modules/@polymer/lit-element/lit-element.js';
-import {render} from './node_modules/@polymer/lit-html';
 import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
 import get from './xhrJsonGet.js';
 
 export class ViewPost extends ViewBehavior(LitElement) {
   _render() {
     return html`
-    ${render(super._render(), this)}
+    ${html(super._render().strings)}
     <h1>${this.viewTitle}</h1>
-      <p>${this.content}</p>
-      <p><a href="/">To latest posts</a></p>
+    <p>${this.content}</p>
+    <p><a href="/">To latest posts</a></p>
     `;
   }
 

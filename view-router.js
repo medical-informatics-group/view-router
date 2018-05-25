@@ -67,17 +67,17 @@ export default class ViewRouter extends LitElement {
   _updateMatchingViews() {
     let matchingView;
     let fallbackView;
-
     Array.from(this.children).forEach((view) => {
-      if (!matchingView && typeof view.pattern === 'string') {
-        const parameters = this._getParametersFromPattern(view.pattern);
+      const viewPattern = view.getAttribute('pattern');
+      if (!matchingView && typeof viewPattern === 'string') {
+        const parameters = this._getParametersFromPattern(viewPattern);
         if (parameters) {
           matchingView = view;
           Object.keys(parameters).forEach((name) => {
             view[name] = parameters[name];
           });
         }
-      } else if (!fallbackView && !view.pattern && typeof view.pattern !== 'string') {
+      } else if (!fallbackView && !viewPattern && typeof viewPattern !== 'string') {
         fallbackView = view;
       }
     });
@@ -141,7 +141,6 @@ export default class ViewRouter extends LitElement {
         if (view.visible && view.unload instanceof Function) {
           view.unload();
         }
-
         view.visible = false;
       }
     });

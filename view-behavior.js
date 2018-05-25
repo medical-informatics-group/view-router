@@ -4,6 +4,9 @@ import LinkPushStateBehavior from './link-push-state-behavior.js';
 export default function ViewBehavior(superclass) {
   return class extends LinkPushStateBehavior(superclass) {
     _render() {
+      if (this.visible !== this.getAttribute('visible')) {
+        this._visibilityChanged(this.visible);
+      }
       return html`
         <style>
           :host {
@@ -15,6 +18,14 @@ export default function ViewBehavior(superclass) {
           }
         </style>
       `;
+    }
+
+    _visibilityChanged(visible) {
+      if (visible) {
+        this.setAttribute('visible', '');
+      } else {
+        this.removeAttribute('visible');
+      }
     }
 
     static get properties() {
