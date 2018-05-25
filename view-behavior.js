@@ -28,6 +28,22 @@ export default function ViewBehavior(superclass) {
       }
     }
 
+    _shouldRender(props, changedProps) {
+      if (props.visible && typeof changedProps.viewTitle === 'string' && changedProps.viewTitle !== document.title) {
+        this._updateDocumentTitle(props.viewTitle);
+      }
+      return true;
+    }
+
+    _updateDocumentTitle() {
+      const newTitle = document.title.replace(ViewBehavior.titleReplacePattern, `${this.viewTitle}$1`);
+      if (document.title === newTitle) {
+        document.title = this.viewTitle;
+      } else {
+        document.title = newTitle;
+      }
+    }
+
     static get properties() {
       return {
         viewTitle: {
@@ -51,3 +67,5 @@ export default function ViewBehavior(superclass) {
     }
   };
 }
+
+ViewBehavior.titleReplacePattern = /^.*?(\s*[-–]\s+[^-–]+)$/;

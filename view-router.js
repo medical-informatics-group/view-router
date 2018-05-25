@@ -115,20 +115,13 @@ export default class ViewRouter extends LitElement {
 
   _setSelectedView(view) {
     this.view = view;
-    if (this.updateDocumentTitle) {
-      this._updateDocumentTitle();
+    if (this.hasAttribute('update-document-title')) {
+      if (view._updateDocumentTitle) {
+        view._updateDocumentTitle();
+      }
     }
     this._updateViewVisibility();
     this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
-  }
-
-  _updateDocumentTitle() {
-    const newTitle = document.title.replace(ViewRouter.titleReplacePattern, `${this.view.viewTitle}$1`);
-    if (document.title === newTitle) {
-      document.title = this.view.viewTitle;
-    } else {
-      document.title = newTitle;
-    }
   }
 
   _updateViewVisibility() {
