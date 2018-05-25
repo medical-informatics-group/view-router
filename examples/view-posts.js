@@ -4,7 +4,7 @@ import ViewBehavior from 'mig-view-router/view-behavior.js';
 // import get from './xhrJsonGet.js';
 
 export class ViewPosts extends ViewBehavior(LitElement) {
-  _render({visible, pattern, posts}) {
+  _render({posts}) {
     console.log(posts);
     return html`
     ${html(super._render().strings)}
