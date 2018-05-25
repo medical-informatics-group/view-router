@@ -5,7 +5,6 @@ import ViewBehavior from 'mig-view-router/view-behavior.js';
 
 export class ViewPosts extends ViewBehavior(LitElement) {
   _render({posts}) {
-    console.log(posts);
     return html`
     ${html(super._render().strings)}
     <h1>${this.viewTitle}</h1>
