@@ -8,9 +8,10 @@ export default class ViewRouter extends LitElement {
   static get properties() {
     return {
       view: Object,
-      updateDocumentTitle: {
+      'update-document-title': {
         type: Boolean,
         value: false,
+        notify: true,
         reflectToAttribute: true
       }
     };
@@ -126,13 +127,16 @@ export default class ViewRouter extends LitElement {
 
   _setSelectedView(view) {
     this.view = view;
-    if (this.hasAttribute('update-document-title')) {
-      if (view._updateDocumentTitle) {
-        view._updateDocumentTitle();
-      }
+
+    if (this.view && this['update-document-title']) {
+      this._updateDocumentTitle();
     }
     this._updateViewVisibility();
     this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
+  }
+
+  _updateDocumentTitle() {
+    document.title = document.title.replace(ViewRouter.titleReplacePattern, `${this.view.viewTitle || ''} $1`);
   }
 
   _updateViewVisibility() {
@@ -154,6 +158,6 @@ export default class ViewRouter extends LitElement {
 ViewRouter.stripLeftSlashPattern = /^[/\s]+/;
 ViewRouter.stripRightSlashPattern = /[/\s]+$/;
 ViewRouter.splitSlashPattern = /[/\s]+/;
-ViewRouter.titleReplacePattern = /^.*?(\s*[-–]\s+[^-–]+)$/;
+ViewRouter.titleReplacePattern = /^.*?(([-–]\s+)?[^-–]+)$/;
 
 customElements.define('view-router', ViewRouter);
