@@ -1,13 +1,18 @@
 import {LitElement} from 'lit-element';
 
-const stripLeftSlashPattern = /^[/\s]+/;
-const stripRightSlashPattern = /[/\s]+$/;
-const splitSlashPattern = /[/\s]+/;
+const startsWithSlashSpacePattern = /^[/\s]+/;
+const endsWithSlashSpacePattern = /[/\s]+$/;
+const endsWithSlashStarPattern = /\/\*$/;
+const slashSpacePattern = /[/\s]+/g;
 const titleReplacePattern = /^.*?(([-–]\s+)?[^-–]+)$/;
 
 export class ViewRouter extends LitElement {
   static get properties() {
     return {
+      base: {
+        type: 'String',
+        reflect: true
+      },
       view: {type: Object},
       updateDocumentTitle: {
         type: Boolean,
@@ -19,6 +24,7 @@ export class ViewRouter extends LitElement {
 
   constructor() {
     super();
+    this.base = '/';
     this.updateDocumentTitle = false;
     this.classList.add('view-router');
   }
@@ -37,9 +43,9 @@ export class ViewRouter extends LitElement {
 
   _getPathParts(path) {
     return path
-      .replace(stripLeftSlashPattern, '')
-      .replace(stripRightSlashPattern, '')
-      .split(splitSlashPattern);
+      .replace(startsWithSlashSpacePattern, '')
+      .replace(endsWithSlashSpacePattern, '')
+      .split(slashSpacePattern);
   }
 
   _getBasePath() {
@@ -88,29 +94,49 @@ export class ViewRouter extends LitElement {
     }
   }
 
-  _updateMatchingViews() {
-    let matchingView;
-    let fallbackView;
+  _routeMatchesBase() {
+    let base = this.base;
+    if (typeof base === 'string') {
+      if (!endsWithSlashStarPattern.test(base)) {
+        base = base.replace(endsWithSlashSpacePattern, '');
+        base += '/*';
+      }
+      const parameters = this._getParametersFromPattern(base);
+      return Boolean(parameters);
+    }
 
-    Array.from(this.children).forEach((view) => {
-      const viewPattern = view.getAttribute('pattern');
-      if (!matchingView && typeof viewPattern === 'string') {
+    return false;
+  }
+
+  _updateMatchingViews() {
+    if (this._routeMatchesBase()) {
+      let matchingView;
+      let fallbackView;
+
+      for (const view of this.children) {
+        if (typeof view.pattern !== 'string') {
+          if (!fallbackView) {
+            fallbackView = view;
+          }
+          continue;
+        }
+
+        const viewPattern = `${this.base}/${view.pattern}`.replace(slashSpacePattern, '/');
         const parameters = this._getParametersFromPattern(viewPattern);
         if (parameters) {
           matchingView = view;
           Object.keys(parameters).forEach((name) => {
             view[name] = parameters[name];
           });
+          break;
         }
-      } else if (!fallbackView && !viewPattern && typeof viewPattern !== 'string') {
-        fallbackView = view;
       }
-    });
 
-    if (matchingView || fallbackView) {
-      this._loadView(matchingView, fallbackView);
-    } else {
-      this._setSelectedViewToNone();
+      if (matchingView || fallbackView) {
+        this._loadView(matchingView, fallbackView);
+      } else {
+        this._setSelectedViewToNone();
+      }
     }
   }
 
@@ -134,20 +160,7 @@ export class ViewRouter extends LitElement {
   }
 
   _updateDocumentTitle() {
-    let allParentViewsAreVisible = true;
-    let parent = this.parentElement;
-
-    while (parent) {
-      if (parent.classList.contains('view-router__view') && !parent.visible) {
-        allParentViewsAreVisible = false;
-        break;
-      }
-      parent = parent.parentElement;
-    }
-
-    if (allParentViewsAreVisible) {
-      document.title = document.title.replace(titleReplacePattern, `${this.view.viewTitle || ''} $1`);
-    }
+    document.title = document.title.replace(titleReplacePattern, `${this.view.viewTitle || ''} $1`);
   }
 
   _updateViewVisibility() {

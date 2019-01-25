@@ -26,7 +26,7 @@ export class ViewPosts extends ViewBehavior(LitElement) {
   render() {
     let posts = '';
     if (Array.isArray(this.posts) && this.posts.length > 0) {
-      posts = this.posts.map((post) => html`<p><a href="${post.id}">${post.title}</a></p>`);
+      posts = this.posts.map((post) => html`<p><a href="/posts/${post.id}">${post.title}</a></p>`);
     } else {
       posts = html`<p><em>No posts available</em></p>`;
     }

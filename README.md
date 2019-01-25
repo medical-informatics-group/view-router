@@ -52,6 +52,12 @@ To have a fallback view, add a web component with the ViewBehavior mixin but wit
 
 If you want to deploy your app in a sub path, just add a <base href="/my/base/path"> to your index.html head tag.
 
+### Nested routing
+
+In some cases there is a need to place a view-router inside a view-behaviour component that already is within a parent view-router. In those cases you need to add a *base* property to the child view-router (see *example/src/view-about.js*), all *pattern* properties within that view-router will use that base URL as a prefix when matched against the browser URL.
+
+This is needed to correctly set update the document title and displaying the fallback views in the right situation.
+
 ## License
 
 This software is provided as is under the MIT License. It might break at any moment or might perfectly for you, feel free to send pull requests if you figure out any improvements.
