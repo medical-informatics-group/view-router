@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Loading... - View router example</title>
+    <base href="/">
+    <script>
+      if (!window.customElements) {
+        document.write('<script src="polyfills/webcomponents/webcomponents-loader.js"><\/script>'); // eslint-disable-line no-useless-escape, max-len
+      }
+    </script>
+  </head>
+  <body>
+    <view-router update-document-title="true">
+      <view-posts pattern="/"></view-posts>
+      <view-about pattern="/about/*"></view-about>
+      <view-post pattern="/:postId"></view-post>
+      <view-not-found></view-not-found>
+    </view-router>
+    <noscript>This service requires JavaScript to function. Please make sure that JavaScript is enabled.</noscript>
+  </body>
+</html>

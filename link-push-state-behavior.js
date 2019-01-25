@@ -1,20 +1,14 @@
+const PROTOCOL_PATTERN = /^\s*\w+:\/{2}/;
+function isExternalURL(url) {
+  const originURL = window.location.origin.replace(PROTOCOL_PATTERN, '');
+  return !url.replace(PROTOCOL_PATTERN, '').startsWith(originURL);
+}
+
 export default function LinkPushStateBehavior(superclass) {
-  const stripProtocolPattern = /^\s*\w+:\/\//;
-
-  function isExternalUrl(url) {
-    const strippedUrl = url.replace(stripProtocolPattern, '//');
-    const strippedOrigin = window.location.origin.replace(stripProtocolPattern, '//');
-
-    if (!strippedUrl.startsWith(strippedOrigin)) {
-      return true;
-    }
-    return false;
-  }
-
   return class extends superclass {
     constructor() {
       super();
-      this._boundOnClick = this._linkClickPushStateClickHandler.bind(this);
+      this._boundOnClick = this._pushStateClickHandler.bind(this);
     }
 
     connectedCallback() {
@@ -27,9 +21,9 @@ export default function LinkPushStateBehavior(superclass) {
       this.removeEventListener('click', this._boundOnClick);
     }
 
-    _linkClickPushStateClickHandler(event) {
-      const target = event.path[0];
-      if (target.tagName === 'A' && !isExternalUrl(target.href)) {
+    _pushStateClickHandler(event) {
+      const target = event.target;
+      if (target.localName === 'a' && !isExternalURL(target.href)) {
         event.preventDefault();
         if (target.href !== window.location.href) {
           window.history.pushState(undefined, target.textContent, target.href);

@@ -1,14 +1,17 @@
-import {LitElement, html} from '@polymer/lit-element/lit-element.js';
-
-import ViewBehavior from 'mig-view-router/view-behavior.js';
+import {LitElement, html} from 'lit-element';
+import {ViewBehavior} from 'mig-view-router/view-behavior.js';
 import './view-about-author.js';
 import './view-about-authors.js';
 import './view-not-found.js';
 
 export class ViewAbout extends ViewBehavior(LitElement) {
-  _render() {
+  constructor() {
+    super();
+    this.viewTitle = 'About';
+  }
+
+  render() {
     return html`
-    ${html(super._render().strings)}
       <h1>${this.viewTitle}</h1>
       <p>
         This an example of the router. <a href="/">Go to the start page</a>.
@@ -20,11 +23,6 @@ export class ViewAbout extends ViewBehavior(LitElement) {
         <view-not-found></view-not-found>
       </view-router>
     `;
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.viewTitle = 'About';
   }
 }
 

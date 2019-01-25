@@ -1,29 +1,20 @@
-import {LitElement, html} from './node_modules/@polymer/lit-element/lit-element.js';
-import ViewBehavior from './node_modules/mig-view-router/view-behavior.js';
+import {LitElement, html} from 'lit-element';
+import {ViewBehavior} from 'mig-view-router/view-behavior.js';
 
 export class ViewPost extends ViewBehavior(LitElement) {
-  _render() {
-    return html`
-    ${html(super._render().strings)}
-    <h1>${this.viewTitle}</h1>
-    <p>${this.content}</p>
-    <p><a href="/">To latest posts</a></p>
-    `;
-  }
-
   static get properties() {
     return Object.assign({}, super.properties, {
       postId: {
         type: String,
-        reflectToAttribute: true
+        reflect: true
       },
-      content: String
+      content: {type: String}
     });
   }
 
   load() {
     return new Promise((resolve, reject) => {
-      fetch('posts.json').then((response) => response.json()).then((data) => {
+      fetch('data/posts.json').then((response) => response.json()).then((data) => {
         const matchingPost = data.find((post) => post.id === this.postId);
         if (matchingPost) {
           this.viewTitle = matchingPost.title;
@@ -39,6 +30,14 @@ export class ViewPost extends ViewBehavior(LitElement) {
   unload() {
     this.viewTitle = 'Loading post...';
     this.content = '';
+  }
+
+  render() {
+    return html`
+      <h1>${this.viewTitle}</h1>
+      <p>${this.content}</p>
+      <p><a href="/">To latest posts</a></p>
+    `;
   }
 }
 

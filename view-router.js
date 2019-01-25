@@ -1,27 +1,33 @@
-import {LitElement, html} from '../@polymer/lit-element/lit-element.js';
+import {LitElement} from 'lit-element';
 
-export default class ViewRouter extends LitElement {
-  _render() {
-    return html`<slot></slot>`;
-  }
+const stripLeftSlashPattern = /^[/\s]+/;
+const stripRightSlashPattern = /[/\s]+$/;
+const splitSlashPattern = /[/\s]+/;
+const titleReplacePattern = /^.*?(([-–]\s+)?[^-–]+)$/;
 
+export class ViewRouter extends LitElement {
   static get properties() {
     return {
-      view: Object,
-      'update-document-title': {
+      view: {type: Object},
+      updateDocumentTitle: {
         type: Boolean,
-        value: false,
-        notify: true,
-        reflectToAttribute: true
+        attribute: 'update-document-title',
+        reflect: true
       }
     };
+  }
+
+  constructor() {
+    super();
+    this.updateDocumentTitle = false;
+    this.classList.add('view-router');
   }
 
   connectedCallback() {
     super.connectedCallback();
     this._boundUpdateMatchingViews = this._updateMatchingViews.bind(this);
     window.addEventListener('popstate', this._boundUpdateMatchingViews);
-    setTimeout(this._boundUpdateMatchingViews.bind(this), 0);
+    setTimeout(this._boundUpdateMatchingViews, 0);
   }
 
   disconnectedCallback() {
@@ -31,9 +37,9 @@ export default class ViewRouter extends LitElement {
 
   _getPathParts(path) {
     return path
-      .replace(ViewRouter.stripLeftSlashPattern, '')
-      .replace(ViewRouter.stripRightSlashPattern, '')
-      .split(ViewRouter.splitSlashPattern);
+      .replace(stripLeftSlashPattern, '')
+      .replace(stripRightSlashPattern, '')
+      .split(splitSlashPattern);
   }
 
   _getBasePath() {
@@ -66,10 +72,10 @@ export default class ViewRouter extends LitElement {
   }
 
   _loadView(view, fallbackView) {
-    if (view.load instanceof Function) {
+    if (view && view.load instanceof Function) {
       view.load().then(() => {
         this._setSelectedView(view);
-      }, (loadError) => {
+      }).catch((loadError) => {
         this.dispatchEvent(new CustomEvent('view-load-failed', {detail: {view, error: loadError}}));
         if (fallbackView) {
           this._setSelectedView(fallbackView);
@@ -78,13 +84,14 @@ export default class ViewRouter extends LitElement {
         }
       });
     } else {
-      this._setSelectedView(view);
+      this._setSelectedView(view || fallbackView);
     }
   }
 
   _updateMatchingViews() {
     let matchingView;
     let fallbackView;
+
     Array.from(this.children).forEach((view) => {
       const viewPattern = view.getAttribute('pattern');
       if (!matchingView && typeof viewPattern === 'string') {
@@ -100,20 +107,8 @@ export default class ViewRouter extends LitElement {
       }
     });
 
-    if (!matchingView && fallbackView) {
-      matchingView = fallbackView;
-    }
-
-    if (matchingView) {
-      if (matchingView.load) {
-        this._loadView(matchingView, fallbackView);
-      } else {
-        const viewReadyListener = () => {
-          matchingView.removeEventListener('view-ready', viewReadyListener);
-          this._loadView(matchingView, fallbackView);
-        };
-        matchingView.addEventListener('view-ready', viewReadyListener);
-      }
+    if (matchingView || fallbackView) {
+      this._loadView(matchingView, fallbackView);
     } else {
       this._setSelectedViewToNone();
     }
@@ -128,7 +123,7 @@ export default class ViewRouter extends LitElement {
   _setSelectedView(view) {
     this.view = view;
 
-    if (this.view && this['update-document-title']) {
+    if (this.view && this.updateDocumentTitle) {
       this._updateDocumentTitle();
     }
     this._updateViewVisibility();
@@ -136,7 +131,7 @@ export default class ViewRouter extends LitElement {
   }
 
   _updateDocumentTitle() {
-    document.title = document.title.replace(ViewRouter.titleReplacePattern, `${this.view.viewTitle || ''} $1`);
+    document.title = document.title.replace(titleReplacePattern, `${this.view.viewTitle || ''} $1`);
   }
 
   _updateViewVisibility() {
@@ -153,11 +148,22 @@ export default class ViewRouter extends LitElement {
       }
     });
   }
+
+  createRenderRoot() {
+    return this;
+  }
 }
 
-ViewRouter.stripLeftSlashPattern = /^[/\s]+/;
-ViewRouter.stripRightSlashPattern = /[/\s]+$/;
-ViewRouter.splitSlashPattern = /[/\s]+/;
-ViewRouter.titleReplacePattern = /^.*?(([-–]\s+)?[^-–]+)$/;
-
 customElements.define('view-router', ViewRouter);
+
+document.write(`
+  <style>
+    .view-router .view-router__view {
+      display: none;
+    }
+
+    .view-router .view-router__view[visible] {
+      display: block;
+    }
+  </style>
+`);

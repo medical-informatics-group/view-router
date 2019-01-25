@@ -1,61 +1,45 @@
-import {html} from '@polymer/lit-element/lit-element.js';
+import {css} from 'lit-element';
 import LinkPushStateBehavior from './link-push-state-behavior.js';
 
-export default function ViewBehavior(superclass) {
+export function ViewBehavior(superclass) {
   return class extends LinkPushStateBehavior(superclass) {
-    _render() {
-      if (this.visible !== this.getAttribute('visible')) {
-        this._visibilityChanged(this.visible);
-      }
-
-      return html`
-        <style>
-          :host {
-            display: none;
-          }
-
-          :host([visible]) {
-            display: block;
-          }
-        </style>
-      `;
-    }
-
-    _visibilityChanged(visible) {
-      if (visible) {
-        this.setAttribute('visible', '');
-      } else {
-        this.removeAttribute('visible');
-      }
-    }
-
-    _firstRendered() {
-      if (super._firstRendered instanceof Function) {
-        super._firstRendered();
-      }
-      this.dispatchEvent(new Event('view-ready'));
-    }
-
     static get properties() {
       return {
         viewTitle: {
           type: String,
-          reflectToAttribute: true
+          attribute: 'view-title',
+          reflect: true
         },
         pattern: {
           type: String,
-          reflectToAttribute: true
+          reflect: true
         },
         visible: {
           type: Boolean,
-          value: false,
-          reflectToAttribute: true
+          reflect: true
         }
       };
     }
 
+    constructor() {
+      super();
+      this.visible = false;
+      this.classList.add('view-router__view');
+    }
+
     load() {
       return new Promise((resolve) => resolve());
+    }
+
+    firstUpdated() {
+      if (super.firstUpdated instanceof Function) {
+        super.firstUpdated();
+      }
+      this.dispatchEvent(new Event('view-ready'));
+    }
+
+    createRenderRoot() {
+      return this;
     }
   };
 }

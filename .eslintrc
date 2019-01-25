@@ -1,21 +1,38 @@
 {
   "extends": [ "strict", "strict/browser" ],
-  "plugins": [ "html", "json" ],
+  "plugins": [ "html", "json", "jest"],
   "globals": {
     "Polymer": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
+  "env": {
+    "es6": true,
+    "jest": true
+  },
   "rules": {
+    "camelcase": [
+      "error",
+      {
+        "allow": ["keep_fnames"]
+      }
+    ],
     "id-match": [ "error", "^([A-Za-z]+[A-Za-z0-9]*|[A-Z][A-Z_0-9]*[A-Z0-9])$", { "onlyDeclarations": true }],
     "id-length": [ 2, {
         "min": 3,
         "max": 50,
-        "exceptions": [ "i", "x", "y", "id", "d", "dx", "dy", "d3", "is", "fs" ],
+        "exceptions": [ "ui", "i", "x", "y", "id", "d", "dx", "dy", "d3", "is", "fs" ],
         "properties": "never"
       }
     ],
+    "no-mixed-operators": 0,
+    "no-use-before-define": "off",
+    "no-debugger": "warn",
     "no-underscore-dangle": 0,
     "no-invalid-this": 0,
     "no-warning-comments": 0,
+    "no-return-assign": "off",
     "filenames/match-regex": 0,
     "filenames/match-exported": 0,
     "comma-dangle": ["error", "never"],
@@ -35,11 +52,11 @@
     "consistent-this": 0,
     "prefer-destructuring": 0,
     "class-methods-use-this": 0,
+    "func-style":"off",
     "id-blacklist": [
       2,
       "httpCallback",
       "err",
-      "error",
       "cb",
       "callback",
       "array",
@@ -58,8 +75,7 @@
       "temp",
       "thing",
       "that",
-      "self",
-      "context"
+      "self"
     ]
   }
 }

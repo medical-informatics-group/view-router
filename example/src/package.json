@@ -1,0 +1,13 @@
+{
+  "name": "mig-view-router-example",
+  "version": "1.0.0",
+  "description": "An example for the mig-view-router package",
+  "main": "index.html",
+  "author": "Fredrik Söderström <fredrik.soderstrom@cambio.se>",
+  "license": "MIT",
+  "dependencies": {
+    "@webcomponents/webcomponentsjs": "^1.3.0",
+    "lit-element": "^2.0.0-rc.5",
+    "mig-view-router": "^1.3.0"
+  }
+}
