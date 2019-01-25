@@ -1,4 +1,3 @@
-import {css} from 'lit-element';
 import LinkPushStateBehavior from './link-push-state-behavior.js';
 
 export function ViewBehavior(superclass) {

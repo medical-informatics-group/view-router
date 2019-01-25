@@ -121,17 +121,33 @@ export class ViewRouter extends LitElement {
   }
 
   _setSelectedView(view) {
-    this.view = view;
+    if (view !== this.view) {
+      this.view = view;
 
-    if (this.view && this.updateDocumentTitle) {
-      this._updateDocumentTitle();
+      if (this.view && this.updateDocumentTitle) {
+        this._updateDocumentTitle();
+      }
+
+      this._updateViewVisibility();
+      this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
     }
-    this._updateViewVisibility();
-    this.dispatchEvent(new CustomEvent('view-changed', {detail: view}));
   }
 
   _updateDocumentTitle() {
-    document.title = document.title.replace(titleReplacePattern, `${this.view.viewTitle || ''} $1`);
+    let allParentViewsAreVisible = true;
+    let parent = this.parentElement;
+
+    while (parent) {
+      if (parent.classList.contains('view-router__view') && !parent.visible) {
+        allParentViewsAreVisible = false;
+        break;
+      }
+      parent = parent.parentElement;
+    }
+
+    if (allParentViewsAreVisible) {
+      document.title = document.title.replace(titleReplacePattern, `${this.view.viewTitle || ''} $1`);
+    }
   }
 
   _updateViewVisibility() {
