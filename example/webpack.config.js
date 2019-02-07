@@ -36,6 +36,11 @@ module.exports = {
     })
   ],
   devServer: {
-    contentBase: outputPath
+    contentBase: outputPath,
+    historyApiFallback: {
+      rewrites: [
+        {from: /^\//, to: '/'}
+      ]
+    }
   }
 };
