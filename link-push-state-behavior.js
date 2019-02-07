@@ -22,7 +22,12 @@ export default function LinkPushStateBehavior(superclass) {
     }
 
     _pushStateClickHandler(event) {
-      const target = event.target;
+      let target = event.target;
+
+      while (target.localName !== 'body' && target.localName !== 'a') {
+        target = target.parentElement;
+      }
+
       if (target.localName === 'a' && !isExternalURL(target.href)) {
         event.preventDefault();
         if (target.href !== window.location.href) {
