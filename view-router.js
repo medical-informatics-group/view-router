@@ -5,6 +5,7 @@ const endsWithSlashSpacePattern = /[/\s]+$/;
 const endsWithSlashStarPattern = /\/\*$/;
 const slashSpacePattern = /[/\s]+/g;
 const titleReplacePattern = /^.*?(([-–]\s+)?[^-–]+)$/;
+const urlQueryPattern = /\?.+$/;
 
 export class ViewRouter extends LitElement {
   static get properties() {
@@ -50,7 +51,7 @@ export class ViewRouter extends LitElement {
 
   _getBasePath() {
     if (window.document.head.querySelector('base')) {
-      return window.location.href.substr(window.document.baseURI.length);
+      return window.location.href.substr(window.document.baseURI.length).replace(urlQueryPattern, '');
     }
 
     return window.location.pathname.substr(1);
