@@ -133,10 +133,12 @@ export class ViewRouter extends LitElement {
         }
       }
 
-      if (matchingView || fallbackView) {
-        this._loadView(matchingView, fallbackView);
-      } else {
-        this._setSelectedViewToNone();
+      if (this.view !== matchingView) {
+        if (matchingView || fallbackView) {
+          this._loadView(matchingView, fallbackView);
+        } else {
+          this._setSelectedViewToNone();
+        }
       }
     }
   }
