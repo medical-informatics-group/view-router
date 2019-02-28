@@ -1,12 +1,28 @@
 [
   {
-    "id": "title1",
-    "title": "Title1",
-    "content": "Ad ex sempiternum. Fabulas ea aliqua. O duis admodum ullamco, litteris adipisicing ubi ullamco est incididunt malis nostrud senserit, an commodo o mentitum quo elit proident do multos irure sed illum e ad dolor voluptate, a id sint offendit, incurreret ita eram. Amet o mentitum, non minim export elit laboris, commodo sunt ad ullamco adipisicing, doctrina legam eu excepteur despicationes. Magnanon fabulas te quae."
+    "id": "4f6aa290-1860-4fc2-b1b3-120c1edbca26",
+    "locales": {
+      "en-US": {
+        "title": "Tips to Protect Your Vision",
+        "content": "While winter weather may be keeping you indoors this February, spring break is around the corner. And if you’re planning to go somewhere sunny, don’t forget to pack your sunglasses."
+      },
+      "sv-SE": {
+        "title": "Tips för att skydda din syn",
+        "content": "Fastän vinterväder kanske håller dig inomhus i februari så är sportlovet runt hörnet och om du planerar att gå i solen så får du inte glömma att ta med dina solglasögon."
+      }
+    }
   },
   {
-    "id": "title2",
-    "title": "Title2",
-    "content": "Incurreret ipsum ita occaecat illustriora ne est nulla tamen summis admodum. Ad dolore elit et iudicem eu singulis fore te nostrud despicationes. Amet o mentitum, non minim export elit laboris, commodo sunt ad ullamco adipisicing, doctrina legam eu excepteur despicationes. Magna non fabulas te quae."
+    "id": "1eca6cf2-c360-4b6b-b042-ecb8d8f77da9",
+    "locales": {
+      "en-US": {
+        "title": "Can Your Spinal Column Actually ‘Think’?",
+        "content": "Researchers say your spinal column might be able to process some information that was previously thought to be done by the brain."
+      },
+      "sv-SE": {
+        "title": "Kan din ryggrad faktiskt tänka?",
+        "content": "Forskare säger att din ryggrad kanske kan behandla en del av den information som vi tidigare trott gjordes av hjärnan."
+      }
+    }
   }
 ]

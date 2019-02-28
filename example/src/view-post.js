@@ -4,7 +4,11 @@ import {ViewBehavior} from 'mig-view-router/view-behavior.js';
 export class ViewPost extends ViewBehavior(LitElement) {
   static get properties() {
     return Object.assign({}, super.properties, {
-      postId: {
+      id: {
+        type: String,
+        reflect: true
+      },
+      language: {
         type: String,
         reflect: true
       },
@@ -14,8 +18,15 @@ export class ViewPost extends ViewBehavior(LitElement) {
 
   load() {
     return new Promise((resolve, reject) => {
-      fetch('data/posts.json').then((response) => response.json()).then((data) => {
-        const matchingPost = data.find((post) => post.id === this.postId);
+      fetch('data/posts.json').then((response) => response.json()).then((posts) => {
+        let matchingPost;
+        for (const post of posts) {
+          if (post.id === this.id && post.locales[this.language]) {
+            matchingPost = post.locales[this.language];
+            break;
+          }
+        }
+
         if (matchingPost) {
           this.viewTitle = matchingPost.title;
           this.content = matchingPost.content;

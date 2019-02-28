@@ -1,6 +1,6 @@
 {
   "name": "mig-view-router",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "URL based router and view web components based on lit-element",
   "main": "examples/index.html",
   "author": "Fredrik Söderström <fredrik.soderstrom@cambio.se>",
@@ -21,6 +21,7 @@
     "web-components"
   ],
   "dependencies": {
+    "json-stable-stringify": "^1.0.1",
     "lit-element": "^2.0.1"
   },
   "devDependencies": {

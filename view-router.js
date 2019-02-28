@@ -1,4 +1,5 @@
 import {LitElement} from 'lit-element';
+import stringify from 'json-stable-stringify';
 
 const startsWithSlashSpacePattern = /^[/\s]+/;
 const endsWithSlashSpacePattern = /[/\s]+$/;
@@ -32,14 +33,14 @@ export class ViewRouter extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._boundUpdateMatchingViews = this._updateMatchingViews.bind(this);
-    window.addEventListener('popstate', this._boundUpdateMatchingViews);
-    setTimeout(this._boundUpdateMatchingViews, 0);
+    this._boundUpdateMatchingView = this._updateMatchingView.bind(this);
+    window.addEventListener('popstate', this._boundUpdateMatchingView);
+    setTimeout(this._boundUpdateMatchingView, 0);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    window.removeEventListener('popstate', this._boundUpdateMatchingViews);
+    window.removeEventListener('popstate', this._boundUpdateMatchingView);
   }
 
   _getPathParts(path) {
@@ -58,23 +59,50 @@ export class ViewRouter extends LitElement {
   }
 
   _getParametersFromPattern(pattern) {
-    const patternParts = this._getPathParts(pattern);
-    const urlParts = this._getPathParts(this._getBasePath());
     const parameters = {};
     let matches = true;
+
+    // Match and extract parameters from  the path
+    const patternParts = this._getPathParts(pattern.replace(urlQueryPattern, ''));
+    const pathParts = this._getPathParts(this._getBasePath());
+
     patternParts.forEach((patternPart, index) => {
-      if (patternPart.charAt(0) === ':' && urlParts[index]) {
+      if (patternPart.charAt(0) === ':' && pathParts[index]) {
         const name = patternPart.substr(1);
-        parameters[name] = urlParts[index];
-      } else if (patternPart !== urlParts[index] && patternPart !== '*') {
+        parameters[name] = pathParts[index];
+      } else if (patternPart !== pathParts[index] && patternPart !== '*') {
         matches = false;
       }
     });
 
+    // Match and extract parameters from the query string
+    const queryParameters = new URLSearchParams(window.location.search);
+    const patternQueryParameters = (() => {
+      const parts = pattern.match(urlQueryPattern);
+      if (!parts) {
+        return undefined;
+      }
+      return new URLSearchParams(parts[0]);
+    })();
+
+    if (matches && patternQueryParameters) {
+      for (const [key, patternValue] of patternQueryParameters.entries()) {
+        const actualValue = queryParameters.get(key);
+        if (patternValue && patternValue.charAt(0) === ':' && actualValue) {
+          const name = patternValue.substr(1);
+          parameters[name] = actualValue;
+        } else if (patternValue && patternValue !== actualValue) {
+          matches = false;
+        }
+      }
+    }
+
+    // If all criterias matches, return the parameters
     if (matches) {
       return parameters;
     }
 
+    // If there pattern does not match return undefined to indicate that this pattern does not match
     return undefined;
   }
 
@@ -109,37 +137,53 @@ export class ViewRouter extends LitElement {
     return false;
   }
 
-  _updateMatchingViews() {
-    if (this._routeMatchesBase()) {
-      let matchingView;
-      let fallbackView;
+  _getViewMatches() {
+    let match;
+    let parameters;
+    let fallback;
 
-      for (const view of this.children) {
-        if (typeof view.pattern !== 'string') {
-          if (!fallbackView) {
-            fallbackView = view;
-          }
-          continue;
+    for (const view of this.children) {
+      if (typeof view.pattern !== 'string') {
+        if (!fallback) {
+          fallback = view;
         }
+        continue;
+      }
 
+      if (!match) {
         const viewPattern = `${this.base}/${view.pattern}`.replace(slashSpacePattern, '/');
-        const parameters = this._getParametersFromPattern(viewPattern);
-        if (parameters) {
-          matchingView = view;
-          Object.keys(parameters).forEach((name) => {
-            view[name] = parameters[name];
-          });
-          break;
+        const viewParameters = this._getParametersFromPattern(viewPattern);
+        if (viewParameters) {
+          match = view;
+          parameters = viewParameters;
+        }
+      }
+    }
+
+    return {match, fallback, parameters};
+  }
+
+  _updateMatchingView() {
+    if (!this._routeMatchesBase()) {
+      return;
+    }
+
+    const matches = this._getViewMatches();
+    const parametersHash = stringify(matches.parameters);
+
+    if (this.view !== (matches.match || matches.fallback) || parametersHash !== this._lastParametersHash) {
+      if (matches.match) {
+        for (const [name, value] of Object.entries(matches.parameters)) {
+          matches.match[name] = value;
         }
       }
 
-      if (this.view !== matchingView) {
-        if (matchingView || fallbackView) {
-          this._loadView(matchingView, fallbackView);
-        } else {
-          this._setSelectedViewToNone();
-        }
+      if (matches.match || matches.fallback) {
+        this._loadView(matches.match, matches.fallback);
+      } else {
+        this._setSelectedViewToNone();
       }
+      this._lastParametersHash = parametersHash;
     }
   }
 

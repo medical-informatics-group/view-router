@@ -26,7 +26,15 @@ export class ViewPosts extends ViewBehavior(LitElement) {
   render() {
     let posts = '';
     if (Array.isArray(this.posts) && this.posts.length > 0) {
-      posts = this.posts.map((post) => html`<p><a href="/posts/${post.id}">${post.title}</a></p>`);
+      const links = [];
+      for (const post of this.posts) {
+        for (const [language, translation] of Object.entries(post.locales)) {
+          links.push(html`<p>
+            <a href="/posts/${post.id}?language=${language}">${translation.title} (${language})</a>
+          </p>`);
+        }
+      }
+      posts = html`${links}`;
     } else {
       posts = html`<p><em>No posts available</em></p>`;
     }
